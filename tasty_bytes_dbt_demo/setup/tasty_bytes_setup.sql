@@ -129,13 +129,17 @@ CREATE OR REPLACE API INTEGRATION tb_dbt_git_api_integration
 
 -- File format and external stage
 
-CREATE OR REPLACE FILE FORMAT tasty_bytes_dbt_db.public.csv_ff 
-type = 'csv';
+USE ROLE ACCOUNTADMIN;
 
+-- Create database and schema explicitly
+CREATE DATABASE IF NOT EXISTS tasty_bytes_dbt_db;
+CREATE SCHEMA IF NOT EXISTS tasty_bytes_dbt_db.public;
+
+-- Create the stage using a fully-qualified 3-part name (database.schema.stage)
 CREATE OR REPLACE STAGE tasty_bytes_dbt_db.public.s3load
-COMMENT = 'Quickstarts S3 Stage Connection'
-url = 's3://sfquickstarts/frostbyte_tastybytes/'
-file_format = tasty_bytes_dbt_db.public.csv_ff;
+    COMMENT = 'Quickstarts S3 Stage Connection'
+    URL = 's3://sfquickstarts/frostbyte_tastybytes/'
+    FILE_FORMAT = (TYPE = 'CSV');
 
 -- =============================================================================
 --  Raw zone table builds
